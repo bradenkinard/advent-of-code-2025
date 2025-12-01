@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "day01",
+]
+
+[workspace.package]
+edition = "2024"
+
+[workspace.dependencies]

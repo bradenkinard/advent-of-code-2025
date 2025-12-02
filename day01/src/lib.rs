@@ -5,7 +5,7 @@ struct Command {
     steps: i32,
 }
 
-#[derive(PartialEq)]
+#[derive(Clone, Copy, PartialEq)]
 enum Direction {
     R,
     L,
@@ -57,28 +57,35 @@ fn rotate_to_position(current_location: i32, cmd: &Command) -> Result<i32> {
 }
 
 fn count_times_zero_is_passed(current_location: i32, cmd: &Command) -> Result<i32> {
-    // No rotation case
+    const CIRCUMFERENCE: i32 = 100;
+
+    // No rotation -> no crossings
     if cmd.steps == 0 {
         return Ok(0);
     }
-    // Less than a full turn from 0 case
-    if (current_location == 0) & (cmd.steps < 100) {
+
+    // If we are at 0 and don't take a full turn -> no crossings
+    if current_location == 0 && cmd.steps < CIRCUMFERENCE {
         return Ok(0);
     }
-    let mut distance_to_zero = current_location;
-    if cmd.direction == Direction::R {
-        distance_to_zero = 100 - current_location;
-    }
-    else if current_location == 0 {
-        distance_to_zero = 100;
-    }
+
+    // Distance (in steps, in the chosen direction) until we hit 0
+    let distance_to_zero = match(cmd.direction, current_location) {
+        (Direction::R, pos) => CIRCUMFERENCE - pos, // e.g. pos=30 -> 70 wraps around to 0
+        (Direction::L, 0) => CIRCUMFERENCE, // going left from 0: full lap to get back to 0
+        (Direction::L, pos) => pos,
+    };
+
+    // Not enough steps to hit 0 a single time
     if cmd.steps < distance_to_zero {
         return Ok(0);
     }
 
-    let mut times_at_zero = 1;
-    let adjusted_steps = cmd.steps - distance_to_zero;
-    times_at_zero += adjusted_steps / 100;
+    // We reach 0 once at `distance_to_zero`,
+    // then every extra full lap of 100 gives another crossing.
+    let remaining_steps = cmd.steps - distance_to_zero;
+    let times_at_zero = 1 + remaining_steps / CIRCUMFERENCE;
+
     Ok(times_at_zero)
 }
 

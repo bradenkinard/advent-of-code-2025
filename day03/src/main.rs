@@ -1,15 +1,13 @@
-use anyhow::Result;
-use std::fs;
 use day03::solve;
+use std::fs;
 
-pub fn read_input(path: &str) -> Result<String> {
-    Ok(fs::read_to_string(path)?)
+pub fn read_input(path: &str) -> String {
+    fs::read_to_string(path).expect("Unable to load inputs file")
 }
 
-fn main() -> Result<()> {
-    let input = read_input("input/day03.txt")?;
-    let (part1, part2) = solve(&input)?;
+fn main() {
+    let input = read_input("input/day03.txt");
+    let (part1, part2) = solve(&input);
     println!("Part 1: {part1}");
     println!("Part 2: {part2}");
-    Ok(())
 }

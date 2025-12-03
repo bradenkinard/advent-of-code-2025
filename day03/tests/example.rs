@@ -7,7 +7,7 @@ fn example_solution() {
 811111111111119
 234234234234278
 818181911112111";
-    let (p1, p2) = solve(example).unwrap();
-    assert_eq!(p1, 0);
-    assert_eq!(p2, 0);
+    let (p1, p2) = solve(example);
+    assert_eq!(p1, 357);
+    assert_eq!(p2, 3121910778619);
 }

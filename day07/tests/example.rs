@@ -21,5 +21,5 @@ fn test_solution() {
 ...............";
     let (s1, s2) = solve(&example);
     assert_eq!(s1, 21);
-    assert_eq!(s2, 0);
+    assert_eq!(s2, 40);
 }

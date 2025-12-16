@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 
 pub fn solve(input: &str) -> (u128, u128) {
     let tachyon = parse_input(&input);
@@ -57,5 +57,30 @@ fn solve_part_1(tachyon: &Tachyon) -> u128 {
 }
 
 fn solve_part_2(tachyon: &Tachyon) -> u128 {
-    0
+    let mut beams = HashMap::new();
+    beams.insert(tachyon.start, 1);
+
+    for layer in &tachyon.layers {
+        let mut new_beams = HashMap::new();
+        if layer.len() == 0 {
+            continue;
+        }
+
+        for (beam, count) in beams {
+            if layer.contains(&beam) {
+                *new_beams.entry(beam - 1).or_default() += count;
+                *new_beams.entry(beam + 1).or_default() += count;
+            }
+            else {
+                *new_beams.entry(beam).or_default() += count;
+            }
+        }
+        beams = new_beams;
+    }
+
+    let mut timelines = 0;
+    for (_beam, count) in beams {
+        timelines += count;
+    }
+    timelines
 }
